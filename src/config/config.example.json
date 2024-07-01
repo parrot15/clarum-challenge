@@ -1,5 +1,7 @@
 {
   "stockApi": {
+    "baseUrl": "https://www.alphavantage.co/query",
+    "timeout": 3000,
     "apiKey": "YOUR API KEY"
   }
 }

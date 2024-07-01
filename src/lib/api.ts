@@ -1,22 +1,12 @@
+import axios from 'axios';
 import appConfig from '@/config/config.json';
 
-export async function fetchStockData(symbol: string) {
-  const API_KEY = appConfig.stockApi.apiKey;
-  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
+const api = axios.create({
+  baseURL: appConfig.stockApi.baseUrl,
+  timeout: appConfig.stockApi.timeout,
+  params: {
+    apikey: appConfig.stockApi.apiKey,
+  },
+});
 
-  const response = await fetch(url, { next: { revalidate: 3600 } });
-  if (!response.ok) {
-    throw new Error('Failed to fetch stock data');
-  }
-
-  const data = await response.json();
-  const timeSeries = data['Time Series (Daily)'];
-
-  return Object.entries(timeSeries)
-    .map(([date, values]: [string, any]) => ({
-      date,
-      value: parseFloat(values['4. close']),
-    }))
-    .reverse()
-    .slice(0, 6000);
-}
+export default api;

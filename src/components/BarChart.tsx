@@ -4,9 +4,11 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 
 interface BarChartProps {
   data: { date: string; value: number }[];
+  minValue: number;
+  maxValue: number;
 }
 
-export default function BarChart({ data }: BarChartProps) {
+export default function BarChart({ data, minValue, maxValue }: BarChartProps) {
   const [chartData, setChartData] = useState(data);
   const [visibleRange, setVisibleRange] = useState({ start: 0, end: 100 });
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -15,11 +17,6 @@ export default function BarChart({ data }: BarChartProps) {
     setChartData(data);
     setVisibleRange({ start: 0, end: Math.min(100, data.length) });
   }, [data]);
-
-  const { maxValue, minValue } = useMemo(() => {
-    const values = chartData.map((item) => item.value);
-    return { maxValue: Math.max(...values), minValue: Math.min(...values) };
-  }, [chartData]);
 
   const range = maxValue - minValue;
 
@@ -38,7 +35,7 @@ export default function BarChart({ data }: BarChartProps) {
   };
 
   return (
-    <div className="w-full h-96 bg-gray-100 p-4 rounded-lg shadow-md">
+    <div className="w-full h-full bg-gray-100 p-4 rounded-lg shadow-md">
       <div
         ref={scrollRef}
         className="w-full h-full overflow-x-auto"
