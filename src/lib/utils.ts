@@ -1,6 +1,6 @@
 import api from './api';
 
-export async function fetchStockData(symbol: string) {
+export const fetchStockData = async (symbol: string) => {
   const response = await api.get('', {
     params: {
       function: 'TIME_SERIES_DAILY',
@@ -17,4 +17,4 @@ export async function fetchStockData(symbol: string) {
     }))
     .reverse()
     .slice(0, 6000);
-}
+};

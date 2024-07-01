@@ -8,5 +8,4 @@ const api = axios.create({
     apikey: appConfig.stockApi.apiKey,
   },
 });
-
 export default api;

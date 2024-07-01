@@ -2,14 +2,14 @@ import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 import StockPicker from '@/components/StockPicker';
 import StockChart from '@/components/StockChart';
-import Loading from '@/components/Loading';
+import Spinner from '@/components/Spinner';
 import { STOCKS } from '@/lib/constants';
 
-export default async function Home({
-  searchParams,
-}: {
+interface HomeProps {
   searchParams: { stock?: string };
-}) {
+}
+
+const Page = async ({ searchParams }: HomeProps) => {
   if (!searchParams.stock) {
     redirect(`?stock=${STOCKS[0]}`);
   }
@@ -21,10 +21,11 @@ export default async function Home({
       <h1 className="text-2xl font-bold mb-4">Stock Price Chart</h1>
       <StockPicker />
       <div className="h-96">
-        <Suspense fallback={<Loading size="small" />}>
+        <Suspense fallback={<Spinner size="small" />}>
           <StockChart key={stock} stock={stock} />
         </Suspense>
       </div>
     </main>
   );
-}
+};
+export default Page;

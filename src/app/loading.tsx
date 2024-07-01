@@ -1,9 +1,10 @@
-import Loading from '@/components/Loading';
+import Spinner from '@/components/Spinner';
 
-export default function LoadingPage() {
+const Loading = () => {
   return (
     <div className="h-screen">
-      <Loading size="large" />
+      <Spinner size="large" />
     </div>
   );
-}
+};
+export default Loading;

@@ -1,27 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import useStockSelection from '@/hooks/useStockSelection';
 import { STOCKS } from '@/lib/constants';
 
-export default function StockPicker() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [selectedStock, setSelectedStock] = useState(
-    searchParams.get('stock') || STOCKS[0],
-  );
-
-  useEffect(() => {
-    const stock = searchParams.get('stock');
-    if (stock && STOCKS.includes(stock)) {
-      setSelectedStock(stock);
-    }
-  }, [searchParams]);
+const StockPicker = () => {
+  const [selectedStock, setSelectedStock] = useStockSelection();
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const stock = e.target.value;
-    setSelectedStock(stock);
-    router.push(`?stock=${stock}`);
+    setSelectedStock(e.target.value);
   };
 
   return (
@@ -39,4 +25,6 @@ export default function StockPicker() {
       </select>
     </div>
   );
-}
+};
+
+export default StockPicker;

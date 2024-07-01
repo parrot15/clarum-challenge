@@ -2,20 +2,19 @@
 
 import { useEffect } from 'react';
 
-export default function Error({
-  error,
-  reset,
-}: {
+interface ErrorProps {
   error: Error & { digest?: string };
   reset: () => void;
-}) {
+}
+
+const Error = ({ error, reset }: ErrorProps) => {
   useEffect(() => {
     console.error(error);
   }, [error]);
 
   return (
     <div className="container mx-auto p-4 text-center">
-      <h2 className="text-2xl font-bold mb-4">Error loading stock data...</h2>
+      <h2 className="text-2xl font-bold mb-4">Error loading page...</h2>
       <p className="mb-4">{error.message}</p>
       <button
         onClick={() => reset()}
@@ -25,4 +24,5 @@ export default function Error({
       </button>
     </div>
   );
-}
+};
+export default Error;
