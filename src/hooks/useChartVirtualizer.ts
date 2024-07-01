@@ -23,8 +23,8 @@ const useChartVirtualizer = (
     count: totalBars,
     getScrollElement: () => scrollRef.current,
     estimateSize: () => barWidth,
-    overscan: 5,  // Number of items to render outside of visible area.
-    horizontal: true,  // Enable horizontal scrolling.
+    overscan: 5, // Number of items to render outside of visible area.
+    horizontal: true, // Enable horizontal scrolling.
   });
 };
 export default useChartVirtualizer;

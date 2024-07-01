@@ -14,7 +14,7 @@ interface BarProps {
 
 /**
  * A bar for a single data point in the bar chart.
- * 
+ *
  * Optimizing performance by using memo to ensure that Bar component is only
  * re-rendered when its props change. Without memo, all Bar components would
  * re-render whenever BarChart re-renders, even if their props didn't actually

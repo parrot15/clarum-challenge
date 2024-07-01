@@ -18,7 +18,7 @@ const BAR_WIDTH = 10;
  * Visualizes the stock data as a bar chart. Supports rendering lots of
  * data (5000+ data points). Supports visual feedback (expanding bars on
  * hover), deleting bars on click, and scrolling left/right.
- * 
+ *
  * As per the requirements, this does not use any chart libraries - the
  * bar chart is rendered using TailwindCSS and dynamic CSS. A virtualization
  * library (react-virtual) is used to make rendering large datasets (5000+
@@ -31,7 +31,11 @@ const BarChart = ({ data, minValue, maxValue }: BarChartProps) => {
 
   // Set up virtualization for efficient rendering. Allows us to only have
   // to render visible bars.
-  const virtualizer = useChartVirtualizer(chartData.length, scrollRef, BAR_WIDTH);
+  const virtualizer = useChartVirtualizer(
+    chartData.length,
+    scrollRef,
+    BAR_WIDTH,
+  );
 
   // Calculates the height of a bar.
   // useCallback ensures this will only be re-created if minValue or
