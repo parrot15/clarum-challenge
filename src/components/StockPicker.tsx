@@ -26,16 +26,20 @@ const stocks = [
 ];
 
 interface StockPickerProps {
-  onSelectStock: (stock: string) => void;
+  initialStock: string;
+  onStockChange: (stock: string) => void;
 }
 
-export default function StockPicker({ onSelectStock }: StockPickerProps) {
-  const [selectedStock, setSelectedStock] = useState('AAPL');
+export default function StockPicker({
+  initialStock,
+  onStockChange,
+}: StockPickerProps) {
+  const [selectedStock, setSelectedStock] = useState(initialStock);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const stock = e.target.value;
     setSelectedStock(stock);
-    onSelectStock(stock);
+    onStockChange(stock);
   };
 
   return (

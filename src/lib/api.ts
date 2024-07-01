@@ -1,6 +1,7 @@
+import { cache } from 'react';
 import appConfig from '@/config/config.json';
 
-export async function fetchStockData(symbol: string) {
+export const fetchStockData = cache(async (symbol: string) => {
   const API_KEY = appConfig.stockApi.apiKey;
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
 
@@ -19,4 +20,4 @@ export async function fetchStockData(symbol: string) {
     }))
     .reverse()
     .slice(0, 6000); // Limit to 6000 most recent datapoints
-}
+});
