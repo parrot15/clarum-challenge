@@ -1,17 +1,13 @@
 'use client';
 
+import { useState, useRef, useCallback } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { DataPoint } from '@/lib/types';
-import { useState, useEffect, useRef } from 'react';
 
 interface BarChartProps {
   data: DataPoint[];
   minValue: number;
   maxValue: number;
-}
-
-interface Range {
-  start: number;
-  end: number;
 }
 
 /**
@@ -21,83 +17,66 @@ interface Range {
  */
 const BarChart = ({ data, minValue, maxValue }: BarChartProps) => {
   const [chartData, setChartData] = useState<DataPoint[]>(data);
-  const [visibleRange, setVisibleRange] = useState<Range>({
-    start: 0,
-    end: 100,
-  });
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setChartData(data);
-    setVisibleRange({ start: 0, end: Math.min(100, data.length) });
-  }, [data]);
+  const parentRef = useRef<HTMLDivElement>(null);
 
   const range = maxValue - minValue;
+  const barWidth = 10; // Set a fixed width for each bar.
 
-  const handleBarClick = (index: number) => {
+  const virtualizer = useVirtualizer({
+    count: chartData.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => barWidth, // width of each bar
+    overscan: 5,
+    horizontal: true,
+  });
+
+  const handleBarClick = useCallback((index: number) => {
     setChartData((prevData) => prevData.filter((_, i) => i !== index));
-  };
+  }, []);
 
-  const handleScroll = () => {
-    if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-      const scrollPercentage = scrollLeft / (scrollWidth - clientWidth);
-      const dataLength = chartData.length;
-      const newStart = Math.floor(scrollPercentage * (dataLength - 100));
-      setVisibleRange({ start: newStart, end: newStart + 100 });
-    }
-  };
+  const renderBar = useCallback(
+    (item: DataPoint, index: number) => {
+      const barHeight = ((item.value - minValue) / range) * 100;
+      return (
+        <div
+          className="h-[calc(100%-20px)] flex flex-col items-center justify-end group relative"
+          style={{ width: `${barWidth}px` }}
+        >
+          <div
+            className="w-full bg-blue-500 hover:bg-blue-600 transition-all duration-200 cursor-pointer transform hover:scale-110 origin-bottom"
+            style={{ height: `${Math.max(barHeight, 1)}%` }}
+            onClick={() => handleBarClick(index)}
+          >
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white p-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity mb-1">
+              {item.value.toFixed(2)}
+            </div>
+            <div className="absolute bottom-[-20px] left-1/2 transform -translate-x-1/2 text-xs text-gray-600 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+              {item.date}
+            </div>
+          </div>
+        </div>
+      );
+    },
+    [minValue, range, handleBarClick],
+  );
 
   return (
-    <div className="w-full h-full bg-gray-100 p-4 rounded-lg shadow-md overflow-x-auto">
-      <div
-        ref={scrollRef}
-        className="w-full h-full overflow-x-auto"
-        onScroll={handleScroll}
-      >
+    <div className="w-full h-full bg-gray-100 p-4 rounded-lg shadow-md">
+      <div ref={parentRef} className="w-full h-full overflow-x-auto">
         <div
-          className="h-full flex items-end space-x-1"
-          style={{ width: `${chartData.length * 10}px` }}
+          className="h-full relative"
+          style={{ width: `${chartData.length * barWidth}px` }}
         >
-          {chartData.map((item, index) => {
-            const barHeight = ((item.value - minValue) / range) * 100;
-            const isVisible =
-              index >= visibleRange.start && index < visibleRange.end;
-            return (
-              <div
-                key={item.date}
-                className={`w-2 flex flex-col items-center justify-end group relative ${isVisible ? '' : 'invisible'}`}
-                style={{ height: '100%' }}
-              >
-                <div
-                  className="w-full bg-blue-500 hover:bg-blue-600 transition-all duration-200 cursor-pointer transform hover:scale-110 origin-bottom"
-                  style={{ height: `${Math.max(barHeight, 1)}%` }}
-                  onClick={() => handleBarClick(index)}
-                >
-                  {isVisible && (
-                    <>
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 bg-black text-white p-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity mb-1">
-                        {item.value.toFixed(2)}
-                      </div>
-                      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-xs text-gray-600 whitespace-nowrap mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        {item.date}
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {virtualizer.getVirtualItems().map((virtualItem) => (
+            <div
+              key={virtualItem.key}
+              className="absolute top-0 left-0 h-full"
+              style={{ transform: `translateX(${virtualItem.start}px)` }}
+            >
+              {renderBar(chartData[virtualItem.index], virtualItem.index)}
+            </div>
+          ))}
         </div>
-      </div>
-      <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-blue-500"
-          style={{
-            width: `${((visibleRange.end - visibleRange.start) / chartData.length) * 100}%`,
-            marginLeft: `${(visibleRange.start / chartData.length) * 100}%`,
-          }}
-        ></div>
       </div>
     </div>
   );

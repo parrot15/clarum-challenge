@@ -1,5 +1,5 @@
-import { fetchStockData } from '@/lib/utils';
 import BarChart from './BarChart';
+import { fetchStockData } from '@/lib/utils';
 import { DataPoint } from '@/lib/types';
 
 interface StockChartProps {
