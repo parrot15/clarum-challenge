@@ -1,3 +1,4 @@
+// The 20 stocks to select from.
 export const STOCKS = [
   'AAPL',
   'GOOGL',

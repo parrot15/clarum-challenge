@@ -3,6 +3,9 @@
 import useStockSelection from '@/hooks/useStockSelection';
 import { STOCKS } from '@/lib/constants';
 
+/**
+ * Allows user to select which stock to display through a drop-down menu.
+ */
 const StockPicker = () => {
   const [selectedStock, setSelectedStock] = useStockSelection();
 

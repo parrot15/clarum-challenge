@@ -1,4 +1,4 @@
-'use client'; // Error components must be client components.
+'use client'; // Error boundary components must be client components.
 
 import { useEffect } from 'react';
 
@@ -7,6 +7,11 @@ interface ErrorProps {
   reset: () => void;
 }
 
+/**
+ * Error boundary component for handling runtime errors at home page level.
+ * Displays an error message and provides button to attempt to recover
+ * from the error.
+ */
 const Error = ({ error, reset }: ErrorProps) => {
   useEffect(() => {
     console.error(error);

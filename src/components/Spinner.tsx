@@ -6,6 +6,10 @@ interface SpinnerProps {
   size?: SpinnerSize;
 }
 
+/**
+ * Displays a spinner for loading states. Can be displayed
+ * 'small' or 'large'.
+ */
 const Spinner = ({ size = 'large' }: SpinnerProps) => {
   const sizeClasses = {
     small: 'h-8 w-8 border-2 border-4 border-blue-200 border-t-blue-500',

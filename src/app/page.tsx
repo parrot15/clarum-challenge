@@ -5,15 +5,23 @@ import StockChart from '@/components/StockChart';
 import Spinner from '@/components/Spinner';
 import { STOCKS } from '@/lib/constants';
 
-interface HomeProps {
+interface PageProps {
   searchParams: { stock?: string };
 }
 
-const Page = async ({ searchParams }: HomeProps) => {
+/**
+ * Home page component for the stock price chart application. Displays
+ * the title, stock picker component to select between different stocks,
+ * and stock chart component for displaying the bar chart of the stock's
+ * prices over time.
+ */
+const Page = async ({ searchParams }: PageProps) => {
+  // Redirect to the first stock if no stock is selected.
   if (!searchParams.stock) {
     redirect(`?stock=${STOCKS[0]}`);
   }
 
+  // Use the selected stock from the URL params, or default to the first stock.
   const stock = searchParams.stock || STOCKS[0];
 
   return (
