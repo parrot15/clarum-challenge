@@ -16,21 +16,15 @@ export default function BarChart({ data }: BarChartProps) {
     setVisibleRange({ start: 0, end: Math.min(100, data.length) });
   }, [data]);
 
-  const visibleData = useMemo(() => {
-    return chartData.slice(visibleRange.start, visibleRange.end);
-  }, [chartData, visibleRange]);
-
   const { maxValue, minValue } = useMemo(() => {
-    const values = visibleData.map((item) => item.value);
+    const values = chartData.map((item) => item.value);
     return { maxValue: Math.max(...values), minValue: Math.min(...values) };
-  }, [visibleData]);
+  }, [chartData]);
 
   const range = maxValue - minValue;
 
   const handleBarClick = (index: number) => {
-    setChartData((prevData) =>
-      prevData.filter((_, i) => i !== index + visibleRange.start),
-    );
+    setChartData((prevData) => prevData.filter((_, i) => i !== index));
   };
 
   const handleScroll = () => {

@@ -1,21 +1,24 @@
-'use client';
-
-import { useState } from 'react';
+import { Suspense } from 'react';
 import StockPicker from './StockPicker';
 import StockChart from './StockChart';
 
-const initialStock = 'AAPL';
-
-export default function StockChartContainer() {
-  const [selectedStock, setSelectedStock] = useState(initialStock);
+export default function StockChartContainer({
+  searchParams,
+}: {
+  searchParams: { stock?: string };
+}) {
+  const stock = searchParams.stock || 'AAPL';
 
   return (
     <>
-      <StockPicker
-        initialStock={initialStock}
-        onStockChange={setSelectedStock}
-      />
-      <StockChart stock={selectedStock} />
+      <StockPicker />
+      <Suspense fallback={<LoadingMessage />}>
+        <StockChart key={stock} searchParams={searchParams} />
+      </Suspense>
     </>
   );
+}
+
+function LoadingMessage() {
+  return <div>Loading chart...</div>;
 }

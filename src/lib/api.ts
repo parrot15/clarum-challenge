@@ -1,11 +1,10 @@
-import { cache } from 'react';
 import appConfig from '@/config/config.json';
 
-export const fetchStockData = cache(async (symbol: string) => {
+export async function fetchStockData(symbol: string) {
   const API_KEY = appConfig.stockApi.apiKey;
   const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
 
-  const response = await fetch(url);
+  const response = await fetch(url, { next: { revalidate: 3600 } });
   if (!response.ok) {
     throw new Error('Failed to fetch stock data');
   }
@@ -19,5 +18,5 @@ export const fetchStockData = cache(async (symbol: string) => {
       value: parseFloat(values['4. close']),
     }))
     .reverse()
-    .slice(0, 6000); // Limit to 6000 most recent datapoints
-});
+    .slice(0, 6000);
+}

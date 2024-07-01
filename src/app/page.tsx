@@ -1,13 +1,19 @@
+import { redirect } from 'next/navigation';
 import StockChartContainer from '@/components/StockChartContainer';
-import { Suspense } from 'react';
 
-export default function Home() {
+export default function Home({
+  searchParams,
+}: {
+  searchParams: { stock?: string };
+}) {
+  if (!searchParams.stock) {
+    redirect('?stock=AAPL');
+  }
+
   return (
     <main className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Stock Price Chart</h1>
-      <Suspense fallback={<div>Loading...</div>}>
-        <StockChartContainer />
-      </Suspense>
+      <StockChartContainer searchParams={searchParams} />
     </main>
   );
 }

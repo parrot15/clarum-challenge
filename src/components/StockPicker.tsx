@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const stocks = [
   'AAPL',
@@ -25,21 +26,24 @@ const stocks = [
   'INTC',
 ];
 
-interface StockPickerProps {
-  initialStock: string;
-  onStockChange: (stock: string) => void;
-}
+export default function StockPicker() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [selectedStock, setSelectedStock] = useState(
+    searchParams.get('stock') || 'AAPL',
+  );
 
-export default function StockPicker({
-  initialStock,
-  onStockChange,
-}: StockPickerProps) {
-  const [selectedStock, setSelectedStock] = useState(initialStock);
+  useEffect(() => {
+    const stock = searchParams.get('stock');
+    if (stock && stocks.includes(stock)) {
+      setSelectedStock(stock);
+    }
+  }, [searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const stock = e.target.value;
     setSelectedStock(stock);
-    onStockChange(stock);
+    router.push(`?stock=${stock}`);
   };
 
   return (
@@ -49,7 +53,6 @@ export default function StockPicker({
         onChange={handleChange}
         className="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       >
-        <option value="">Select a stock</option>
         {stocks.map((stock) => (
           <option key={stock} value={stock}>
             {stock}

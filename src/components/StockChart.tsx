@@ -1,14 +1,13 @@
-'use client';
-
-import { useStockData } from '@/hooks/useStockData';
+import { fetchStockData } from '@/lib/api';
 import BarChart from './BarChart';
 
-export default function StockChart({ stock }: { stock: string }) {
-  const { data, isLoading, error } = useStockData(stock);
-
-  if (isLoading) return <div>Loading chart...</div>;
-  if (error) return <div>Error loading chart: {error.message}</div>;
-  if (!data) return null;
+export default async function StockChart({
+  searchParams,
+}: {
+  searchParams: { stock?: string };
+}) {
+  const stock = searchParams.stock || 'AAPL';
+  const data = await fetchStockData(stock);
 
   return <BarChart data={data} />;
 }
