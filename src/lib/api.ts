@@ -2,7 +2,7 @@ import appConfig from '@/config/config.json';
 
 export async function fetchStockData(symbol: string) {
   const API_KEY = appConfig.stockApi.apiKey;
-  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${API_KEY}`;
+  const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&outputsize=full&apikey=${API_KEY}`;
 
   const response = await fetch(url);
   if (!response.ok) {
@@ -13,10 +13,10 @@ export async function fetchStockData(symbol: string) {
   const timeSeries = data['Time Series (Daily)'];
 
   return Object.entries(timeSeries)
-    .slice(0, 30)
     .map(([date, values]: [string, any]) => ({
       date,
       value: parseFloat(values['4. close']),
     }))
-    .reverse();
+    .reverse()
+    .slice(0, 6000); // Limit to 6000 most recent datapoints
 }
